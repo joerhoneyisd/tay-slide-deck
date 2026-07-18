@@ -1,332 +1,424 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Slide Deck</title>
-<style>
-  :root {
-    --default-bg: #000000;
-    --fg: rgba(255,255,255,0.92);
-    --fg-dim: rgba(255,255,255,0.45);
-    --control-bg: rgba(255,255,255,0.08);
-    --control-bg-hover: rgba(255,255,255,0.16);
-  }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slide Deck</title>
+    <style>
+      :root {
+        --default-bg: #ffffff;
+        --fg: rgba(255, 255, 255, 0.92);
+        --fg-dim: rgba(255, 255, 255, 0.45);
+        --control-bg: rgba(255, 255, 255, 0.08);
+        --control-bg-hover: rgba(255, 255, 255, 0.16);
+      }
 
-  * { box-sizing: border-box; }
+      * {
+        box-sizing: border-box;
+      }
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--default-bg);
-    overflow: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--default-bg);
+        overflow: hidden;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+      }
 
-  .viewer {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-  }
+      .viewer {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+      }
 
-  .slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--default-bg);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease;
-  }
+      .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--default-bg);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+      }
 
-  .slide.active {
-    opacity: 1;
-    pointer-events: auto;
-  }
+      .slide.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
 
-  .slide img {
-    max-width: 100vw;
-    max-height: 100vh;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    user-select: none;
-    -webkit-user-drag: none;
-  }
+      .slide img {
+        max-width: 100vw;
+        max-height: 100vh;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        user-select: none;
+        -webkit-user-drag: none;
+      }
 
-  /* arrow buttons */
-  .nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--control-bg);
-    border: none;
-    color: var(--fg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    transition: background 0.15s ease, opacity 0.3s ease;
-    opacity: 0;
-  }
-  .viewer.show-ui .nav-btn { opacity: 1; }
-  .nav-btn:hover { background: var(--control-bg-hover); }
-  .nav-btn:disabled { opacity: 0 !important; pointer-events: none; }
-  .nav-btn.prev { left: 20px; }
-  .nav-btn.next { right: 20px; }
-  .nav-btn svg { width: 20px; height: 20px; }
+      /* arrow buttons */
+      .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--control-bg);
+        border: none;
+        color: var(--fg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        transition:
+          background 0.15s ease,
+          opacity 0.3s ease;
+        opacity: 0;
+      }
+      .viewer.show-ui .nav-btn {
+        opacity: 1;
+      }
+      .nav-btn:hover {
+        background: var(--control-bg-hover);
+      }
+      .nav-btn:disabled {
+        opacity: 0 !important;
+        pointer-events: none;
+      }
+      .nav-btn.prev {
+        left: 20px;
+      }
+      .nav-btn.next {
+        right: 20px;
+      }
+      .nav-btn svg {
+        width: 20px;
+        height: 20px;
+      }
 
-  /* counter */
-  .counter {
-    position: absolute;
-    bottom: 24px;
-    left: 24px;
-    z-index: 10;
-    color: var(--fg-dim);
-    font-size: 13px;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.02em;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    background: var(--control-bg);
-    padding: 6px 12px;
-    border-radius: 20px;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-  }
-  .viewer.show-ui .counter { opacity: 1; }
+      /* counter */
+      .counter {
+        position: absolute;
+        bottom: 24px;
+        left: 24px;
+        z-index: 10;
+        color: var(--fg-dim);
+        font-size: 13px;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.02em;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        background: var(--control-bg);
+        padding: 6px 12px;
+        border-radius: 20px;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+      }
+      .viewer.show-ui .counter {
+        opacity: 1;
+      }
 
-  /* progress dots */
-  .progress {
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    display: flex;
-    gap: 6px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  .viewer.show-ui .progress { opacity: 1; }
+      /* progress dots */
+      .progress {
+        position: absolute;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        display: flex;
+        gap: 6px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .viewer.show-ui .progress {
+        opacity: 1;
+      }
 
-  .progress .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.3);
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-  }
-  .progress .dot.active {
-    background: var(--fg);
-    transform: scale(1.3);
-  }
+      .progress .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          transform 0.2s ease;
+      }
+      .progress .dot.active {
+        background: var(--fg);
+        transform: scale(1.3);
+      }
 
-  /* fullscreen toggle */
-  .fs-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 10;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--control-bg);
-    border: none;
-    color: var(--fg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    opacity: 0;
-    transition: opacity 0.3s ease, background 0.15s ease;
-  }
-  .viewer.show-ui .fs-btn { opacity: 1; }
-  .fs-btn:hover { background: var(--control-bg-hover); }
-  .fs-btn svg { width: 18px; height: 18px; }
+      /* fullscreen toggle */
+      .fs-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 10;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--control-bg);
+        border: none;
+        color: var(--fg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        opacity: 0;
+        transition:
+          opacity 0.3s ease,
+          background 0.15s ease;
+      }
+      .viewer.show-ui .fs-btn {
+        opacity: 1;
+      }
+      .fs-btn:hover {
+        background: var(--control-bg-hover);
+      }
+      .fs-btn svg {
+        width: 18px;
+        height: 18px;
+      }
 
-  .empty-state {
-    color: var(--fg-dim);
-    font-size: 14px;
-    text-align: center;
-    max-width: 320px;
-    line-height: 1.5;
-  }
-</style>
-</head>
-<body>
+      .empty-state {
+        color: var(--fg-dim);
+        font-size: 14px;
+        text-align: center;
+        max-width: 320px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="viewer show-ui" id="viewer">
+      <div id="slides"></div>
 
-<div class="viewer show-ui" id="viewer">
-  <div id="slides"></div>
+      <button class="nav-btn prev" id="prevBtn" aria-label="Previous slide">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="nav-btn next" id="nextBtn" aria-label="Next slide">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
 
-  <button class="nav-btn prev" id="prevBtn" aria-label="Previous slide">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-  </button>
-  <button class="nav-btn next" id="nextBtn" aria-label="Next slide">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-  </button>
+      <button class="fs-btn" id="fsBtn" aria-label="Toggle fullscreen">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+          ></path>
+        </svg>
+      </button>
 
-  <button class="fs-btn" id="fsBtn" aria-label="Toggle fullscreen">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
-  </button>
+      <div class="counter" id="counter"></div>
+      <div class="progress" id="progress"></div>
+    </div>
 
-  <div class="counter" id="counter"></div>
-  <div class="progress" id="progress"></div>
-</div>
+    <script>
+      // ---------------------------------------------------------------------
+      // ADD YOUR SLIDES HERE. One entry per slide, in order.
+      // `src` is required. `bg` is optional — a CSS color used as the bleed
+      // color behind the image if the image's aspect ratio doesn't match the
+      // viewport. If omitted, it falls back to black.
+      // ---------------------------------------------------------------------
+      const SLIDES = [
+        { src: "1.webp", bg: "#ffffff" },
+        { src: "2.webp", bg: "#ffffff" },
+        { src: "3.webp", bg: "#ffffff" },
+        { src: "4.webp", bg: "#ffffff" },
+        { src: "5.webp", bg: "#ffffff" },
+        { src: "6.webp", bg: "#ffffff" },
+        { src: "7.webp", bg: "#ffffff" },
+        { src: "8.webp", bg: "#ffffff" },
+        { src: "8b.webp", bg: "#ffffff" },
+        { src: "9.webp", bg: "#ffffff" },
+      ];
+      const DEFAULT_BG = "#ffffff";
+      // ---------------------------------------------------------------------
 
-<script>
-  // ---------------------------------------------------------------------
-  // ADD YOUR SLIDES HERE. One entry per slide, in order.
-  // `src` is required. `bg` is optional — a CSS color used as the bleed
-  // color behind the image if the image's aspect ratio doesn't match the
-  // viewport. If omitted, it falls back to black.
-  // ---------------------------------------------------------------------
-  const SLIDES = [
-    { src: "1.webp", bg: "#ffffff" },
-    { src: "2.webp", bg: "#ffffff" },
-    { src: "3.webp", bg: "#ffffff" },
-    { src: "4.webp", bg: "#ffffff" },
-    { src: "5.webp", bg: "#ffffff" },
-    { src: "6.webp", bg: "#ffffff" },
-    { src: "7.webp", bg: "#ffffff" },
-    { src: "8.webp", bg: "#ffffff" },
-  ];
-  const DEFAULT_BG = "#000000";
-  // ---------------------------------------------------------------------
+      const slidesEl = document.getElementById("slides");
+      const viewer = document.getElementById("viewer");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const counter = document.getElementById("counter");
+      const progress = document.getElementById("progress");
+      const fsBtn = document.getElementById("fsBtn");
 
-  const slidesEl = document.getElementById('slides');
-  const viewer = document.getElementById('viewer');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const counter = document.getElementById('counter');
-  const progress = document.getElementById('progress');
-  const fsBtn = document.getElementById('fsBtn');
+      let current = 0;
+      let idleTimer = null;
 
-  let current = 0;
-  let idleTimer = null;
-
-  function buildSlides() {
-    if (SLIDES.length === 0) {
-      slidesEl.innerHTML = `
+      function buildSlides() {
+        if (SLIDES.length === 0) {
+          slidesEl.innerHTML = `
         <div class="empty-state">
           No slides yet. Open this file and add slides to the
           <code>SLIDES</code> array at the bottom of the HTML.
         </div>`;
-      counter.style.display = 'none';
-      progress.style.display = 'none';
-      prevBtn.style.display = 'none';
-      nextBtn.style.display = 'none';
-      return;
-    }
+          counter.style.display = "none";
+          progress.style.display = "none";
+          prevBtn.style.display = "none";
+          nextBtn.style.display = "none";
+          return;
+        }
 
-    SLIDES.forEach((slide, i) => {
-      const div = document.createElement('div');
-      div.className = 'slide' + (i === 0 ? ' active' : '');
-      div.dataset.index = i;
-      div.style.background = slide.bg || DEFAULT_BG;
+        SLIDES.forEach((slide, i) => {
+          const div = document.createElement("div");
+          div.className = "slide" + (i === 0 ? " active" : "");
+          div.dataset.index = i;
+          div.style.background = slide.bg || DEFAULT_BG;
 
-      const img = document.createElement('img');
-      img.src = slide.src;
-      img.alt = `Slide ${i + 1}`;
-      img.draggable = false;
-      div.appendChild(img);
-      slidesEl.appendChild(div);
+          const img = document.createElement("img");
+          img.src = slide.src;
+          img.alt = `Slide ${i + 1}`;
+          img.draggable = false;
+          div.appendChild(img);
+          slidesEl.appendChild(div);
 
-      const dot = document.createElement('div');
-      dot.className = 'dot' + (i === 0 ? ' active' : '');
-      dot.addEventListener('click', () => goTo(i));
-      progress.appendChild(dot);
-    });
+          const dot = document.createElement("div");
+          dot.className = "dot" + (i === 0 ? " active" : "");
+          dot.addEventListener("click", () => goTo(i));
+          progress.appendChild(dot);
+        });
 
-    updateUI();
-  }
+        updateUI();
+      }
 
-  function goTo(index) {
-    if (SLIDES.length === 0) return;
-    if (index < 0 || index >= SLIDES.length) return;
+      function goTo(index) {
+        if (SLIDES.length === 0) return;
+        if (index < 0 || index >= SLIDES.length) return;
 
-    document.querySelectorAll('.slide')[current].classList.remove('active');
-    document.querySelectorAll('.dot')[current].classList.remove('active');
+        document.querySelectorAll(".slide")[current].classList.remove("active");
+        document.querySelectorAll(".dot")[current].classList.remove("active");
 
-    current = index;
+        current = index;
 
-    document.querySelectorAll('.slide')[current].classList.add('active');
-    document.querySelectorAll('.dot')[current].classList.add('active');
+        document.querySelectorAll(".slide")[current].classList.add("active");
+        document.querySelectorAll(".dot")[current].classList.add("active");
 
-    updateUI();
-    wakeUI();
-  }
+        updateUI();
+        wakeUI();
+      }
 
-  function next() { goTo(current + 1); }
-  function prev() { goTo(current - 1); }
+      function next() {
+        goTo(current + 1);
+      }
+      function prev() {
+        goTo(current - 1);
+      }
 
-  function updateUI() {
-    counter.textContent = `${current + 1} / ${SLIDES.length}`;
-    prevBtn.disabled = current === 0;
-    nextBtn.disabled = current === SLIDES.length - 1;
-  }
+      function updateUI() {
+        counter.textContent = `${current + 1} / ${SLIDES.length}`;
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === SLIDES.length - 1;
+      }
 
-  function wakeUI() {
-    viewer.classList.add('show-ui');
-    clearTimeout(idleTimer);
-    idleTimer = setTimeout(() => {
-      viewer.classList.remove('show-ui');
-    }, 2200);
-  }
+      function wakeUI() {
+        viewer.classList.add("show-ui");
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+          viewer.classList.remove("show-ui");
+        }, 2200);
+      }
 
-  // navigation events
-  prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
-  nextBtn.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+      // navigation events
+      prevBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        prev();
+      });
+      nextBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        next();
+      });
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
-    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
-    else if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); }
-    wakeUI();
-  });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
+          e.preventDefault();
+          next();
+        } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+          e.preventDefault();
+          prev();
+        } else if (e.key === "f" || e.key === "F") {
+          toggleFullscreen();
+        }
+        wakeUI();
+      });
 
-  ['mousemove', 'click', 'touchstart'].forEach(evt => {
-    viewer.addEventListener(evt, wakeUI);
-  });
+      ["mousemove", "click", "touchstart"].forEach((evt) => {
+        viewer.addEventListener(evt, wakeUI);
+      });
 
-  function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen().catch(() => {});
-    }
-  }
-  fsBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleFullscreen(); });
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+      fsBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleFullscreen();
+      });
 
-  // simple swipe support for touch devices
-  let touchStartX = null;
-  viewer.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  viewer.addEventListener('touchend', (e) => {
-    if (touchStartX === null) return;
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
-    touchStartX = null;
-  });
+      // simple swipe support for touch devices
+      let touchStartX = null;
+      viewer.addEventListener(
+        "touchstart",
+        (e) => {
+          touchStartX = e.touches[0].clientX;
+        },
+        { passive: true },
+      );
+      viewer.addEventListener("touchend", (e) => {
+        if (touchStartX === null) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 50) {
+          dx < 0 ? next() : prev();
+        }
+        touchStartX = null;
+      });
 
-  buildSlides();
-  wakeUI();
-</script>
-
-</body>
+      buildSlides();
+      wakeUI();
+    </script>
+  </body>
 </html>
